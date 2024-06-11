@@ -1,0 +1,153 @@
+@startuml
+
+class Robot {
+  config: RobotConfig;
+  account: TinkoffAccount;
+  candlesLoader: CandlesLoader;
+  orders: Orders;
+  portfolio: Portfolio;
+  strategies: Strategy[];
+  logger: Logger;
+
+  constructor(api: TinkoffInvestApi, config: RobotConfig)
+
+  runOnce()
+  runStrategies()
+}
+
+class FigiInstrument {
+  candles: HistoricCandle[] = [];
+  info?: Instrument;
+
+  constructor(protected robot: Robot, public figi: string)
+
+  + loadInfo()
+  + isTradingAvailable()
+  + loadCandles(req: Pick<CandlesReqParams, 'interval' | 'minCount'>)
+  + getCurrentPrice()
+  + getLotSize()
+}
+
+class Strategy {
+  instrument: FigiInstrument
+  currentProfit: number
+  profitSignal?: ProfitLossSignal
+  smaSignal?: SmaCrossoverSignal
+  rsiSignal?: RsiCrossoverSignal
+
+  constructor(robot: Robot, public config: StrategyConfig)
+
+  + run()
+  - loadCandles()
+  - calcSignal()
+  - buy()
+  - sell()
+  - calcAvailableLots()
+  - checkEnoughCurrency(orderReq: LimitOrderReq)
+  - calcCurrentProfit()
+  - calcRequiredCandlesCount()
+  - logSignals(signals: Record<string, unknown>)
+}
+
+class RobotModule {
+  logger: Logger
+  api: TinkoffInvestAPI
+  account: TinkoffAccount
+
+  constructor(robot: Robot)
+}
+
+class Logger {
+  
+}
+
+interface StrategyConfig {
+  figi: string
+  orderLots: number
+  brokerFee: number
+  interval: CandleInterval
+  profit?: ProfitLossSignalConfig
+  sma?: SmaCrossoverSignalConfig
+  rsi?: RsiCrossoverSignalConfig
+}
+
+package Signals {
+  class ProfitLossSignalConfig {
+    minCandlesCount
+
+    constructor(protected strategy: Strategy, config: ProfitLossSignalConfig)
+
+    + calc({ profit }: SignalParams): SignalResult
+  }
+
+  class SmaCrossoverSignalConfig {
+    minCandlesCount(): number
+
+    constructor(protected strategy: Strategy, config: SmaCrossoverSignalConfig)
+
+    + calc({ candles, profit }: SignalParams): SignalResult
+  } 
+  
+  class RsiCrossoverSignalConfig {
+    minCandlesCount(): number
+
+    constructor(protected strategy: Strategy, config: RsiCrossoverSignalConfig)
+
+    + calc({ candles, profit }: SignalParams): SignalResult
+  }
+
+  interface SignalParams {
+    candles: HistoricCandle[],
+    profit: number;
+  }
+
+  class Signal {
+    logger: Logger
+    charts: Record<string, [ Date, number ][]>
+    minCandlesCount(): number
+
+    constructor(protected strategy: Strategy, protected config: T)
+
+    + calc(req: SignalParams): SignalResult
+    - getPrices(candles: HistoricCandle[], type: 'close' | 'open' | 'low' | 'high')
+    - plot(label: string, values: number[], candles: HistoricCandle[])
+  }
+}
+
+
+
+class Orders {
+  items: OrderState[]
+
+  + load()
+  + postLimitOrder({ figi, direction, quantity, price }: LimitOrderReq)
+  + cancelExistingOrders(figi: string)
+  - logItems()
+}
+
+class Portfolio {
+  + load()
+  + loadPositionsWithBlocked()
+  + getBuyPrice(figi: string)
+  + getBalance()
+  + getAvailableQty(figi: string)
+
+  - logPositions()
+}
+
+' interface LimitOrderReq = Pick<PostOrderRequest, 'figi' | 'direction' | 'quantity' | 'price'>
+
+Strategy --|> RobotModule
+Orders --|> RobotModule
+Strategy --> Robot
+Portfolio --|> RobotModule
+Strategy --> StrategyConfig
+RobotModule --> Robot
+
+
+RsiCrossoverSignalConfig --|> Signal
+SmaCrossoverSignalConfig --|> Signal
+ProfitLossSignalConfig --|> Signal
+FigiInstrument -|> RobotModule
+
+@enduml

@@ -1,0 +1,117 @@
+@startuml PortfolioConstructor
+
+interface PortfolioResponse {
+  ' Общая стоимость акций в портфеле в рублях.'
+  totalAmountShares?: MoneyValue
+  ' Общая стоимость облигаций в портфеле в рублях.'
+  totalAmountBonds?: MoneyValue
+  ' Общая стоимость фондов в портфеле в рублях.'
+  totalAmountEtf?: MoneyValue
+  ' Общая стоимость валют в портфеле в рублях.'
+  totalAmountCurrencies?: MoneyValue
+  ' Общая стоимость фьючерсов в портфеле в рублях.'
+  totalAmountFutures?: MoneyValue
+  ' Текущая относительная доходность портфеля, в %.'
+  expectedYield?: Quotation
+  ' Список позиций портфеля.'
+  positions: PortfolioPosition[]
+}
+
+' Денежная сумма в определенной валюте '
+interface MoneyValue {
+  ' строковый ISO-код валюты '
+  currency: string
+  ' целая часть суммы, может быть отрицательным числом '
+  units: number
+  ' дробная часть суммы, может быть отрицательным числом '
+  nano: number
+}
+
+interface PortfolioPosition {
+  ' Figi-идентификатора инструмента. '
+  figi: string
+  ' Тип инструмента. '
+  instrumentType: string
+  ' Количество инструмента в портфеле в штуках. '
+  quantity?: Quotation
+  ' Средневзвешенная цена позиции. **Возможна задержка до секунды для пересчёта**. '
+  averagePositionPrice?: MoneyValue
+  ' Текущая рассчитанная относительная доходность позиции, в %. '
+  expectedYield?: Quotation
+  ' Текущий НКД. '
+  currentNkd?: MoneyValue
+  ' Средняя цена лота в позиции в пунктах (для фьючерсов). **Возможна задержка до секунды для пересчёта**. '
+  averagePositionPricePt?: Quotation
+  ' Текущая цена за 1 инструмент. Для получения стоимости лота требуется умножить на лотность инструмента.. '
+  currentPrice?: MoneyValue
+  ' Средняя цена лота в позиции по методу FIFO. **Возможна задержка до секунды для пересчёта**. '
+  averagePositionPriceFifo?: MoneyValue
+  ' Количество лотов в портфеле. '
+  quantityLots?: Quotation
+}
+
+class TBankAPI {
+  fetchPortfolio(): PortfolioResponse
+}
+
+interface Instrument {}
+
+class Portfolio {
+  positions: PortfolioPosition[]
+  total: 
+
+  constructor() 
+
+  addPosition(position: PortfolioPosition)
+  removePosition(position: PortfolioPosition)
+
+  getByFigi(figi: string)
+}
+
+interface Position {
+' Figi-идентификатора инструмента. '
+  figi: string
+' Тип инструмента. '
+  instrumentType: string
+' Количество инструмента в портфеле в штуках. '
+  quantity?: Quotation
+
+  price: MoneyValue
+}
+
+
+interface Action {
+  value: MoneyValue
+' TODO: Может использовать просто орицательные значения
+  direction: "sell" | "buy"
+}
+
+interface Figi {}
+
+interface Settings {
+  instruments: Figi[]
+  portfolioSize: number
+}
+
+' Сумма на которую нужно купить инструмент, чтобы он соответствовал ожидаемому портфелю
+class PortfolioConstruction<S> {
+  constructor(settings: Settings)
+
+' Добавляем инструмент в модель построения портфеля. Если инструмента нет в настройках, то
+  + addPosition(position: Position)
+' Убираем инструмент из модели построения портфеля
+  + removePosition(figi: Figi)
+' Получаем максимально доступное количество размера позиции
+  + getValueByFigi()
+' Задать количество средств для равномерного распределения между инструментами
+  + setMaxAmount()
+}
+
+' Сделать модель построения которая позволит чтобы все инструменты находились +- на одном уровне по общему объему
+
+' PortfolioConstruction --> Position
+' PortfolioConstruction --> Settings
+' Settings --> Figi
+
+
+@enduml
