@@ -2,6 +2,7 @@
 import { crossover, crossunder, toSeries } from "../utils.js";
 import { Signal, SignalParams, SignalResult } from "../base.js";
 import { RSI } from "@debut/indicators";
+import { Logger } from "../types.js";
 
 export interface RsiCrossoverSignalConfig {
   period: number;
@@ -16,9 +17,10 @@ const DEFAULT_CONFIG: RsiCrossoverSignalConfig = {
 };
 
 export class RsiCrossoverSignal extends Signal<RsiCrossoverSignalConfig> {
-  constructor(config: RsiCrossoverSignalConfig = DEFAULT_CONFIG) {
-    const logger = { log: console.log };
-
+  constructor(
+    logger: Logger,
+    config: RsiCrossoverSignalConfig = DEFAULT_CONFIG
+  ) {
     super(logger, config);
   }
 
@@ -41,11 +43,17 @@ export class RsiCrossoverSignal extends Signal<RsiCrossoverSignalConfig> {
     let result: "buy" | "sell" | undefined;
 
     if (crossunder(rsiValue, low)) result = "buy";
+    // TODO: Убрать profit?
     if (crossover(rsiValue, high) && profit > 0) result = "sell";
 
     if (!result) return;
 
-    this.logger.log(result);
+    this.logger.log({
+      timestamp: Date.now(),
+      direction: result,
+      rsiValue,
+      prices: closePrices,
+    });
 
     return result;
   }
