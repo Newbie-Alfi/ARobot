@@ -28,6 +28,8 @@ export class ProfitLossSignal extends Signal<ProfitLossSignalConfig> {
     if (profit >= takeProfit) result = "sell";
     if (profit <= -stopLoss) result = "sell";
 
+    if (!result) return;
+
     this.logger.log({ timestamp: Date.now, direction: result });
 
     return result;
