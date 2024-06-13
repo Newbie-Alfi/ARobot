@@ -5,20 +5,21 @@ import { crossover, crossunder } from "../utils.js";
 import { Signal, SignalParams, SignalResult } from "../base.js";
 import { SMA } from "@debut/indicators";
 
-const DEFAULT_CONFIG = {
-  /** Кол-во точек для расчета быстрого тренда */
-  fastLength: 10,
-  /** Кол-во точек для расчета медленного тренда */
-  slowLength: 30,
+export interface SmaCrossoverSignalConfig {
+  fastLength: number;
+  slowLength: number;
+}
+
+const DEFAULT_CONFIG: SmaCrossoverSignalConfig = {
+  fastLength: 7,
+  slowLength: 21,
 };
 
-export type SmaCrossoverSignalConfig = typeof DEFAULT_CONFIG;
-
 export class SmaCrossoverSignal extends Signal<SmaCrossoverSignalConfig> {
-  constructor(config: SmaCrossoverSignalConfig) {
+  constructor(config: SmaCrossoverSignalConfig = DEFAULT_CONFIG) {
     const logger = { log: console.log };
 
-    super(logger, Object.assign({}, DEFAULT_CONFIG, config));
+    super(logger, config);
   }
 
   get period() {

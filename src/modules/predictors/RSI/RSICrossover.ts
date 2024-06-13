@@ -4,25 +4,22 @@ import { Signal, SignalParams, SignalResult } from "../base.js";
 import { RSI } from "@debut/indicators";
 
 export interface RsiCrossoverSignalConfig {
-  /** Кол-во точек для расчета rsi */
   period: number;
-  /** Верхний уровень */
   highLevel: number;
-  /** Нижний уровень */
   lowLevel: number;
 }
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: RsiCrossoverSignalConfig = {
   period: 14,
   highLevel: 70,
   lowLevel: 30,
 };
 
 export class RsiCrossoverSignal extends Signal<RsiCrossoverSignalConfig> {
-  constructor(config: RsiCrossoverSignalConfig) {
+  constructor(config: RsiCrossoverSignalConfig = DEFAULT_CONFIG) {
     const logger = { log: console.log };
 
-    super(logger, Object.assign({}, DEFAULT_CONFIG, config));
+    super(logger, config);
   }
 
   get period() {
