@@ -1,20 +1,23 @@
-import { TransactionCostResponse, BROKER } from "./types";
+import { ITransactionCostResponse, BROKER, IBrokerInfo } from "./types.js";
 
-class TransactionCosts {
-  calc(current: number, incomePercentage: number): TransactionCostResponse {
-    // TODO:
-    const brokerFees = [{ broker: BROKER.T_BANK, fee: 0.03 }];
-    const bestFee = brokerFees[0];
+export class TransactionCosts {
+  private _brokerFees: IBrokerInfo[] = [{ broker: BROKER.T_BANK, fee: 0.03 }];
 
-    if (incomePercentage <= bestFee.fee) {
-      throw new Error(
-        `Минимальная коммисия больше ожидаемой прибыли. Размер коммисии = ${bestFee.fee}`
-      );
+  calc(
+    moneyAmount: number,
+    incomePercentage: number
+  ): ITransactionCostResponse {
+    const bestBroker = this._brokerFees[0];
+
+    if (incomePercentage <= bestBroker.fee) {
+      const message = `Минимальная коммисия больше ожидаемой прибыли. Размер коммисии = ${bestBroker.fee}`;
+
+      throw new Error(message);
     }
 
-    const result: TransactionCostResponse = {
-      broker: bestFee.broker,
-      breakEvenPoint: current + current * bestFee.fee,
+    const result: ITransactionCostResponse = {
+      broker: bestBroker.broker,
+      breakEvenPoint: moneyAmount + moneyAmount * bestBroker.fee,
     };
 
     return result;
