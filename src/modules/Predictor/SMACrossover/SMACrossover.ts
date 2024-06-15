@@ -1,10 +1,7 @@
-/* eslint-disable max-statements */
-
-// TODO: imports *.js this is ts files
 import { crossover, crossunder } from "../utils.js";
 import { Signal, SignalParams, SignalResult } from "../base.js";
 import { SMA } from "@debut/indicators";
-import { Logger } from "../types.js";
+import { Logger } from "../../../types.js";
 
 export interface SMACrossoverSignalConfig {
   fastLength: number;
@@ -33,23 +30,23 @@ export class SMACrossoverSignal extends Signal<SMACrossoverSignalConfig> {
     const fastMa = sma(closePrices, this.config.fastLength);
     const slowMa = sma(closePrices, this.config.slowLength);
 
-    let result: "buy" | "sell" | undefined;
+    let direction: "buy" | "sell" | undefined;
 
-    if (crossover(fastMa, slowMa)) result = "buy";
+    if (crossover(fastMa, slowMa)) direction = "buy";
     // TODO: Убрать profit
-    if (crossunder(fastMa, slowMa) && profit > 0) result = "sell";
+    if (crossunder(fastMa, slowMa) && profit > 0) direction = "sell";
 
-    if (!result) return;
+    if (!direction) return { direction: undefined, expectedIncome: undefined };
 
     this.logger.log({
       timestamp: Date.now(),
-      direction: result,
+      direction: direction,
       fastMa,
       slowMa,
       prices: closePrices,
     });
 
-    return result;
+    return { direction, expectedIncome: undefined };
   }
 }
 

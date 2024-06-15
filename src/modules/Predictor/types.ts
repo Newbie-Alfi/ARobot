@@ -1,3 +1,2 @@
-export interface Logger {
-  log(...v: any[]): void;
-}
+import { HistoricCandle } from "tinkoff-invest-api/dist/generated/marketdata";
+

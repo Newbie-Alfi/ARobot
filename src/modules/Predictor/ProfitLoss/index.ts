@@ -1,5 +1,5 @@
 import { Signal, SignalParams, SignalResult } from "../base.js";
-import { Logger } from "../types.js";
+import { Logger } from "../../../types.js";
 
 export interface ProfitLossSignalConfig {
   takeProfit: number;
@@ -23,15 +23,15 @@ export class ProfitLossSignal extends Signal<ProfitLossSignalConfig> {
   calc({ profit }: SignalParams): SignalResult {
     const { takeProfit, stopLoss } = this.config;
 
-    let result: "sell" | undefined;
+    let direction: "sell" | undefined;
 
-    if (profit >= takeProfit) result = "sell";
-    if (profit <= -stopLoss) result = "sell";
+    if (profit >= takeProfit) direction = "sell";
+    if (profit <= -stopLoss) direction = "sell";
 
-    if (!result) return;
+    if (!direction) return { direction: undefined, expectedIncome: undefined };
 
-    this.logger.log({ timestamp: Date.now, direction: result });
+    this.logger.log({ timestamp: Date.now, direction: direction });
 
-    return result;
+    return { direction, expectedIncome: takeProfit };
   }
 }

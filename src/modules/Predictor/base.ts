@@ -1,8 +1,11 @@
 import { Helpers } from "tinkoff-invest-api";
 import { HistoricCandle } from "tinkoff-invest-api/dist/generated/marketdata.js";
-import { Logger } from "./types";
+import { Logger } from "../../types.js";
 
-export type SignalResult = "buy" | "sell" | undefined;
+export type SignalResult = {
+  direction: "buy" | "sell" | undefined;
+  expectedIncome: undefined | number;
+};
 
 export interface SignalParams {
   candles: HistoricCandle[];
