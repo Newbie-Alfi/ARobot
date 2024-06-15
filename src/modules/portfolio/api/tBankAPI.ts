@@ -1,68 +1,65 @@
-import { Helpers, TinkoffAccount, TinkoffInvestApi } from "tinkoff-invest-api";
+import { Helpers } from "tinkoff-invest-api";
 import {
+  PortfolioPosition,
   PortfolioResponse,
-  PositionsResponse,
 } from "tinkoff-invest-api/dist/generated/operations.js";
+import { IPortfolio, IPosition } from "../types.js";
+import { T_BANK_ACCOUNT } from "../../../config.js";
 
-export class Portfolio {
-  private portfolio?: PortfolioResponse;
-  private positionsWithBlocked?: PositionsResponse;
+// Нужно получать список инструментов с ценой их преобретения. И текущий торговый   баланс
+export class TBankPortfolioAPI {
+  loadPortfolio = async (): Promise<IPortfolio> => {
+    // TODO: ограничить количество запросов в минуту
+    const response = await T_BANK_ACCOUNT.getPortfolio();
 
-  constructor(private account: TinkoffAccount, private api: TinkoffInvestApi) {}
+    console.log(response);
 
-  private get positions() {
-    return this.portfolio?.positions || [];
-  }
+    return this._toPortfolio(response);
+  };
 
-  /**
-   * Загружаем текущие позиции в портфеле.
-   */
-  async load() {
-    this.portfolio = await this.account.getPortfolio();
-    this.logPositions();
-  }
+  private _toPortfolio = (from: PortfolioResponse): IPortfolio => {
+    const positions = from.positions.map((v) => this._toPosition(v));
 
-  /**
-   * Загружаем текущие позиции в портфеле с учетом заблокированных активов.
-   */
-  async loadPositionsWithBlocked() {
-    this.positionsWithBlocked = await this.account.getPositions();
-  }
+    return {
+      positions: positions,
+      balance: this._getBalance(positions),
+    };
+  };
 
-  getBuyPrice(figi: string) {
-    const position = this.positions.find((p) => p.figi === figi);
-    return Helpers.toNumber(position?.averagePositionPrice) || 0;
-  }
+  // TODO: Рассматривать баланс иначе, никак наличие рублей в портфеле.
+  private _getBalance = (positions: IPosition[]) => {
+    const rubles = positions.find((v) => v.figi === "RUB000UTSTOM");
 
-  getBalance() {
-    const item = this.positionsWithBlocked?.money.find(
-      (item) => item.currency === "rub"
-    );
-    return Helpers.toNumber(item) || 0;
-  }
+    if (rubles === undefined) return 0;
 
-  getAvailableQty(figi: string) {
-    const item = this.positionsWithBlocked?.securities.find(
-      (item) => item.figi === figi
-    );
-    return item?.balance || 0;
-  }
+    return rubles.quantity * rubles.averagePositionPrice;
+  };
 
-  private logPositions() {
-    console.log(`Позиции загружены: ${this.positions.length}`);
-    this.positions.forEach((p) => {
-      const expectedYield = this.api.helpers.toNumber(p.expectedYield) || 0;
-      const s = [
-        " ".repeat(4),
-        p.figi,
-        `${this.api.helpers.toNumber(p.quantity)}`,
-        p.averagePositionPrice &&
-          `x ${this.api.helpers.toNumber(p.averagePositionPrice)}`,
-        p.expectedYield && `(${expectedYield > 0 ? "+" : ""}${expectedYield})`,
-      ]
-        .filter(Boolean)
-        .join(" ");
-      console.log(s);
-    });
-  }
+  private _toPosition = (from: PortfolioPosition): IPosition => {
+    const { figi, quantity, instrumentType } = from;
+
+    // TODO: Когда averagePositionPrice может быть равно undefined?
+    if (from.averagePositionPrice === undefined) {
+      throw Error(
+        `Невалидное значение поля averagePositionPrice - ${from.averagePositionPrice}`
+      );
+    }
+
+    // TODO: Когда quantity может быть равно undefined?
+    if (quantity === undefined) {
+      throw Error(`Невалидное значение поля quantity - ${quantity}`);
+    }
+
+    const averagePositionPrice = Helpers.toNumber(from.averagePositionPrice);
+
+    return {
+      figi,
+      instrumentType,
+      averagePositionPrice,
+      // TODO: У валют ещё есть nano
+      quantity: quantity.units,
+    };
+  };
 }
+
+export const tBankAPI = new TBankPortfolioAPI();
