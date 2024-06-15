@@ -1,3 +1,3 @@
 export interface IRiskModule {
-  calc(): number;
+  calc(...v: unknown[]): number;
 }
