@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { TinkoffInvestApi } from 'tinkoff-invest-api';
 
 const token = process.env.TINKOFF_API_TOKEN;
-const appName = 'vitalets/tinkoff-robot';
+const appName = 'alfi/tinkoff-robot';
 
 if (!token) throw new Error(`Не указан токен.`);
 

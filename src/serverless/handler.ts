@@ -10,7 +10,7 @@ fixConsoleForLogging();
 
 const api = new TinkoffInvestApi({
   token: process.env.TINKOFF_API_TOKEN!,
-  appName:' vitalets/tinkoff-robot',
+  appName:' alfi/tinkoff-robot',
 });
 
 const configOverwrite: Partial<RobotConfig> = {
