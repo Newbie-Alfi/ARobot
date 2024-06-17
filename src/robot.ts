@@ -13,7 +13,7 @@ import { Logger, LogLevel } from "@vitalets/logger";
 import { Strategy, StrategyConfig } from "./strategy.js";
 import { Orders } from "./account/orders.js";
 // import { Portfolio } from './account/portfolio.js';
-import { Portfolio } from "./modules/portfolio/api/tBankAPI.js";
+import { Portfolio } from "./modules/Portfolio/api/tBankAPI.js";
 
 const { REAL_ACCOUNT_ID = "", SANDBOX_ACCOUNT_ID = "" } = process.env;
 
@@ -60,7 +60,7 @@ export class Robot {
     });
     this.orders = new Orders(this);
     this.portfolio = new Portfolio(this.account, api);
-    // 
+    //
     this.strategies = this.config.strategies.map(
       (strategyConfig) => new Strategy(this, strategyConfig)
     );
