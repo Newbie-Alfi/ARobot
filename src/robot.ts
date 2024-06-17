@@ -13,7 +13,7 @@ import { Logger, LogLevel } from "@vitalets/logger";
 import { Strategy, StrategyConfig } from "./strategy.js";
 import { Orders } from "./account/orders.js";
 // import { Portfolio } from './account/portfolio.js';
-import { Portfolio } from "./modules/Portfolio/api/tBankAPI.js";
+import { Portfolio } from "./modules/portfolio/api/tBankAPI.js";
 
 const { REAL_ACCOUNT_ID = "", SANDBOX_ACCOUNT_ID = "" } = process.env;
 
