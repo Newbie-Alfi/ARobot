@@ -1,0 +1,155 @@
+@startuml
+
+component Predictor {
+  class Logger {
+    ' Хранения данных '
+    log()
+    ' Лог ошибок '
+    error() 
+    ' Если ' 
+    warn()
+  }
+
+  component Strategies {
+    interface IStrategyResponse {
+      direction: "buy" | "sell"
+      expectedIncome: number | undefined
+    }
+
+    interface IEMAConfig {
+      fastLength: number
+      slowLength: number
+    } 
+
+    interface ISMAConfig {
+      fastLength: number
+      slowLength: number
+    }
+
+    class EMACrossover {
+      constructor(config: IEMAConfig)
+
+      calc(prices: number): IStrategyResponse
+    }
+
+    EMACrossover ..> IEMAConfig
+    SMACrossover ..> ISMAConfig
+    EMACrossover ..> IStrategyResponse
+    SMACrossover ..> IStrategyResponse
+
+    class SMACrossover {
+      constructor(config: ISMAConfig)
+
+      calc(prices: number): IStrategyResponse
+    }
+  }
+
+  component CandlesAPI {
+    class TBankCandlesAPI {
+      getCandles(config: GetCandlesRequest): 
+    }
+
+    interface ICandlesAPI {
+      getCandles(config: GetCandlesRequest): 
+    }
+
+    interface GetCandlesRequest {
+    ' Figi-идентификатор инструмента'
+      figi: string;
+    ' Начало запрашиваемого периода в часовом поясе UTC'
+      from?: Date;
+    ' Окончание запрашиваемого периода в часовом поясе UTC'
+      to?: Date;
+    ' Интервал запрошенных свечей'
+      interval: CandleInterval;
+    }
+
+    enum CandleInterval {
+      CANDLE_INTERVAL_1_MIN
+      CANDLE_INTERVAL_5_MIN
+      CANDLE_INTERVAL_15_MIN 
+      CANDLE_INTERVAL_HOUR
+      CANDLE_INTERVAL_DAY
+    }
+
+    TBankCandlesAPI --> ICandlesAPI
+    ICandlesAPI ..> GetCandlesRequest
+    GetCandlesRequest ..> CandleInterval
+  }
+
+
+  interface IStrategy {
+    isActive: boolean;
+    intruments: FIGI[]
+  }
+
+  interface ISMACrossoverStrategyConfig {
+    fastLength: number
+    slowLength: number
+    interval: CandleInterval
+    isActive: boolean;
+  }
+
+  interface IEMACrossoverStrategyConfig {
+    fastLength: number
+    slowLength: number
+    interval: CandleInterval
+    isActive: boolean;
+  }
+
+  interface PredictorSettings {
+    cacheDir: string;
+  }
+
+  interface IPredictorConfig {
+    sma: ISMAStrategyConfig[]
+    ema: IEMAStrategyConfig[]
+    settings: PredictorSettings
+  }
+
+  ISMACrossoverStrategyConfig --> IStrategy
+  IEMACrossoverStrategyConfig --> IStrategy
+
+  IPredictorConfig ..> ISMACrossoverStrategyConfig
+  IPredictorConfig ..> IEMACrossoverStrategyConfig
+
+  class Predictorr {
+    constructor(api: ICandlesAPI, config: IPredictorConfig)
+
+    run()
+    stop()
+    
+    - 
+  }
+
+  Predictorr ..> IPredictorConfig
+  Predictorr ..> ICandlesAPI
+
+  class Strategy {
+    constructor(figi: string, config: IStrategyConfig)
+
+    run()
+  }
+}
+
+component Risk {
+
+}
+
+@enduml
+
+' Запускает все стратегии по данному figi. Некоторые стратегии могут требовать 2-а инструмента. Например корреляция фондов и бумаг внутри этого фонда 
+' Стратегии зависимые от конкретных инструментов
+' Стратегии независимые от конкретных инструментов
+
+' enum Strategies {
+'   SMAC_CROSSOVER
+'   EMA_CROSSOVER
+' }
+
+
+ ' 1. Получается конфиг, состоящий из списка стратегий. 
+  Конфиг должен cодержать информацию на каком списке инструментов он запускает стратегию, какой интервал, какую стратегию он использует. 
+  Почему именно так?
+  а) Запустить все стратегии на всех инструментах кажется плохой идеей
+  б) Стратегии существуют разные и они требуют разных настроек. Какой-то стратегии достаточно 1-го инструмента каким-то 2-ух, а каким-то больше

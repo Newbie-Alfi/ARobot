@@ -1,0 +1,12 @@
+@startuml 
+
+class TBankAPI {
+  
+}
+
+class Execution {
+  + buy(figi: string, moneyAmount: number): void;
+  + sell(figi: string, moneyAmount: number): void;
+}
+
+@enduml

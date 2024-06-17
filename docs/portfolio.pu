@@ -50,15 +50,34 @@ interface PortfolioPosition {
   quantityLots?: Quotation
 }
 
-class TBankAPI {
+' ___
+
+interface IPortfolioAPI {
   fetchPortfolio(): PortfolioResponse
+}
+
+class TBankPortfolioAPI {
+  fetchPortfolio(): PortfolioResponse
+}
+
+class SomeBrokerPortfolioAPI {
+  fetchPortfolio(): PortfolioResponse
+}
+
+TBankPortfolioAPI ..|> IPortfolioAPI
+SomeBrokerPortfolioAPI ..|> IPortfolioAPI
+
+' ___
+
+class PortfolioLoader {
+  load()
 }
 
 interface Instrument {}
 
 class Portfolio {
   positions: PortfolioPosition[]
-  total: 
+  total: number 
 
   constructor() 
 
@@ -104,7 +123,7 @@ class PortfolioConstruction<S> {
 ' Получаем максимально доступное количество размера позиции
   + getValueByFigi()
 ' Задать количество средств для равномерного распределения между инструментами
-  + setMaxAmount()
+  + setTotal()
 }
 
 ' Сделать модель построения которая позволит чтобы все инструменты находились +- на одном уровне по общему объему

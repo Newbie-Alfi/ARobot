@@ -1,0 +1,17 @@
+@startuml
+
+participant "Модуль предиктор" as Alpha
+participant "Модуль построения портфеля" as Portfolio
+participant "Модуль учёта рисков" as Risk   
+participant "Модуль учёта транзакционных издержек" as TransactionCost
+participant "Модуль исполнения" as Execution
+
+Portfolio --> Alpha: Получение списка инструментов
+
+Alpha --> Execution: Прогноз по инструменту
+
+Execution --> Portfolio: Получение максммально допустимой суммы сделки или её запрет
+Execution --> Risk: Корректирование суммы сделки или её запрет
+Execution --> TransactionCost: Запретить или разрешить сделку
+
+@enduml

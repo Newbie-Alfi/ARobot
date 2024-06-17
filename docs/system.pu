@@ -1,15 +1,52 @@
 @startuml
 
-component "Альфа модель" as Alpha
-component "Модель рисков" as Risk   
-component "Транзакционные издержки" as TransactionCost
-component Портфель as Portfolio
-component "Модуль Исполнения" as Execution
+component "Модуль предиктор" as Alpha {
+  portin a1
+  portout a2
+}
+component "Модуль учёта рисков" as Risk  {
+  portin ri1
+  portin ri2
+  portout ro1
+} 
+component "Модуль учёта транзакционных издержек" as TransactionCost {
+  portin t1
+  portout t2
+}
+component "Модуль построения портфеля" as Portfolio {
+  portin pi1
+  portin pi2
+  portout po1
+}
+component "Модуль Исполнения" as Execution {
+  portin e1
+}
 
-Alpha --> Portfolio
-Risk --> Portfolio
-TransactionCost --> Portfolio
-Portfolio --> Execution
-Execution --> Portfolio
+interface "Инструмент" as DataI
+interface "Портфель" as DataP
+interface "Данные" as Data
+
+interface "Прогноз" as Forecast
+interface "Сумма сделки" as Position
+interface "Сумма сделки" as Position2
+' interface ""
+
+DataI ----left- a1
+DataP ---left-- pi2
+Data ---left-- ri2
+
+a2 -- Forecast
+Forecast -- pi1
+
+po1 -- Position
+Position  -- ri1
+
+ro1 --> t1
+t2 --> e1
+
+' Risk --> Portfolio
+' TransactionCost --> Portfolio
+' Portfolio --> Execution
+' Execution --> Portfolio
 
 @enduml
