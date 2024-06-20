@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { robotAPI } from "../RunRobotBtn/api";
 import { RobotConfig } from "../RunRobotBtn/types";
-import { Button, Typography } from "antd";
+import { Button, Flex, Typography } from "antd";
 
 interface IRestartRobotBtnProps {
   robotConfig: RobotConfig;
@@ -53,7 +53,10 @@ export function RestartRobotBtn({ robotConfig, onRun }: IRestartRobotBtnProps) {
   }, []);
 
   return (
-    <>
+    <Flex vertical gap="large">
+      <Typography.Title type="danger" level={5}>
+        {reason}
+      </Typography.Title>
       <Button
         className="robot-btn robot-restart-btn"
         disabled={status === undefined || !isValid}
@@ -64,7 +67,6 @@ export function RestartRobotBtn({ robotConfig, onRun }: IRestartRobotBtnProps) {
           Перезапуск
         </Typography.Title>
       </Button>
-      {reason}
-    </>
+    </Flex>
   );
 }
