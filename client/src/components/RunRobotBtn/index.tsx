@@ -61,11 +61,15 @@ export function RunRobotBtn({ robotConfig, onRun }: IRunRobotBtnProps) {
     fetchStatus();
   }, []);
 
+  const isVisibleError = !!error || !!reason;
+
   return (
     <Flex vertical gap="large">
-      <Typography.Title type="danger" level={5}>
-        {reason}
-      </Typography.Title>
+      {isVisibleError && (
+        <Typography.Title type="danger" level={5}>
+          {error || reason}
+        </Typography.Title>
+      )}
       <RunButton
         disabled={status === undefined || !isValid}
         isTurn={status === "on"}

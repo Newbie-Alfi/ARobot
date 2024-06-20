@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { InstrumentSelect } from "../select";
 import { IRSIConfig, RSIInput } from "../inputs/RSIInput";
 import { BaseStrategyInput } from ".";
-import { Card } from "antd";
 
 export interface IRSIStrategyConfig {
   instruments: string[];

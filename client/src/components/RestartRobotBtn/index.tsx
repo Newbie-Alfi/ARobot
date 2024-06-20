@@ -52,11 +52,15 @@ export function RestartRobotBtn({ robotConfig, onRun }: IRestartRobotBtnProps) {
     fetchStatus();
   }, []);
 
+  const isVisibleError = !!error || reason;
+
   return (
     <Flex vertical gap="large">
-      <Typography.Title type="danger" level={5}>
-        {reason}
-      </Typography.Title>
+      {isVisibleError && (
+        <Typography.Title type="danger" level={5}>
+          {error || reason}
+        </Typography.Title>
+      )}
       <Button
         className="robot-btn robot-restart-btn"
         disabled={status === undefined || !isValid}

@@ -1,4 +1,4 @@
-import { Flex, InputNumber, Tooltip, Typography } from "antd";
+import { Flex, InputNumber, Tooltip } from "antd";
 import { useMemo, useState } from "react";
 
 export interface ISMAConfig {

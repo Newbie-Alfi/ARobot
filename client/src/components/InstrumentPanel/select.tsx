@@ -14,7 +14,7 @@ export const InstrumentSelect = ({
   ...props
 }: IInstrumentSelectProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>();
+  const [, setError] = useState<string>();
   const [instruments, setInstruments] = useState<IInstrument[]>([]);
 
   const fetchInstruments = async () => {

@@ -1,4 +1,4 @@
-import { Divider, Flex } from "antd";
+import { Flex } from "antd";
 import "./App.css";
 import { InstrumentPanel } from "./components/InstrumentPanel";
 import { MainButton } from "./MainButton";
