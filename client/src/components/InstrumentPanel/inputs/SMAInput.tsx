@@ -1,4 +1,4 @@
-import { InputNumber } from "antd";
+import { Flex, InputNumber, Tooltip, Typography } from "antd";
 import { useMemo, useState } from "react";
 
 export interface ISMAConfig {
@@ -30,23 +30,30 @@ export function SMAInput({ value, onChange }: ISMAInputProps) {
   }, [slowLength, fastLength]);
 
   return (
-    <div>
-      <InputNumber
-        min={1}
-        placeholder="Период медленной скользящей"
-        status={slowLength === null ? "error" : undefined}
-        max={1000}
-        value={slowLength}
-        onChange={handleSlowLengthChange}
-      />
-      <InputNumber
-        min={1}
-        placeholder="Период быстрой скользящей"
-        max={1000}
-        status={fastLength === null ? "error" : undefined}
-        value={fastLength}
-        onChange={handleFastLenthChange}
-      />
-    </div>
+    <Flex gap="small">
+      <Tooltip title="Длина медленной скользящей">
+        <InputNumber
+          style={{ flex: 1 }}
+          min={1}
+          placeholder="Длина медленной скользящей"
+          status={slowLength === null ? "error" : undefined}
+          max={1000}
+          value={slowLength}
+          onChange={handleSlowLengthChange}
+        />
+      </Tooltip>
+
+      <Tooltip title="Длина быстрой скользящей">
+        <InputNumber
+          style={{ flex: 1 }}
+          min={1}
+          placeholder="Длина быстрой скользящей"
+          max={1000}
+          status={fastLength === null ? "error" : undefined}
+          value={fastLength}
+          onChange={handleFastLenthChange}
+        />
+      </Tooltip>
+    </Flex>
   );
 }

@@ -1,0 +1,58 @@
+.robot-btn {
+  height: 320px;
+  width: 320px;
+  font-size: 40px !important;
+}
+
+.robot-run-btn {
+  background: transparent;
+  box-shadow: 0px 0px 20px #77ffbd;
+  border: 5px solid #cbe2d7;
+  color: #fff;
+}
+
+.robot-run-btn:hover {
+  /* TODO: */
+  background: radial-gradient(#cae6d8, #2bb673) !important;
+  box-shadow: 0px 0px 60px #30dd8a;
+  border: 20px solid #fff;
+  font-size: 32px !important;
+}
+
+.robot-stop-btn {
+  background: linear-gradient(#fc6076, #ff9a44, #ef9d43, #e75516);
+  box-shadow: 0px 0px 20px #e75516;
+  border: 5px solid #fff;
+  color: #fff;
+}
+
+.robot-stop-btn:hover {
+  /* TODO: */
+  background: linear-gradient(#fc6076, #ff9a44, #ef9d43, #e75516) !important;
+  box-shadow: 0px 0px 60px #e75516;
+  border: 20px solid #fff;
+  font-size: 32px !important;
+}
+
+.robot-restart-btn {
+  background: radial-gradient(#7bcfe4, #04befe);
+  box-shadow: 0px 0px 20px #04befe;
+  border: 20px solid #fff;
+  color: #fff;
+}
+
+.robot-restart-btn:hover {
+  /* TODO: */
+  background: radial-gradient(#67d1e4, #04befe) !important;
+  box-shadow: 0px 0px 60px #04befe;
+  border: 5px solid #fff !important;
+  color: #fff !important;
+  font-size: 32px !important;
+}
+
+.robot-btn__title {
+  color: inherit !important;
+  text-shadow: 0 0 10px #ffffff8f !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+}

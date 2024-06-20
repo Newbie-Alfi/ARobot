@@ -1,4 +1,4 @@
-import { InputNumber } from "antd";
+import { Flex, Form, InputNumber, Tooltip, Typography } from "antd";
 import { useMemo, useState } from "react";
 
 export interface IRSIConfig {
@@ -36,31 +36,41 @@ export function RSIInput({ value, onChange }: IRSIInputProps) {
   }, [period, highLevel, lowLevel]);
 
   return (
-    <div>
-      <InputNumber
-        min={1}
-        placeholder="Период"
-        status={period === null ? "error" : undefined}
-        max={1000}
-        value={period}
-        onChange={handlePeriodChange}
-      />
-      <InputNumber
-        min={50}
-        placeholder="Уровень перекупленности"
-        max={100}
-        status={highLevel === null ? "error" : undefined}
-        value={highLevel}
-        onChange={handleHighLevelChange}
-      />
-      <InputNumber
-        min={0}
-        placeholder="Уровень перепродонасти"
-        max={50}
-        status={lowLevel === null ? "error" : undefined}
-        value={lowLevel}
-        onChange={handleLowLevelChange}
-      />
-    </div>
+    <Flex gap="small">
+      <Tooltip title="Длина индикатора">
+        <InputNumber
+          min={1}
+          placeholder="Длина индикатора"
+          status={period === null ? "error" : undefined}
+          max={1000}
+          value={period}
+          onChange={handlePeriodChange}
+        />
+      </Tooltip>
+
+      <Tooltip title="Уровень перекупленности">
+        <InputNumber
+          style={{ flex: 1 }}
+          min={50}
+          placeholder="Уровень перекупленности"
+          max={100}
+          status={highLevel === null ? "error" : undefined}
+          value={highLevel}
+          onChange={handleHighLevelChange}
+        />
+      </Tooltip>
+
+      <Tooltip title="Уровень перепроданасти">
+        <InputNumber
+          style={{ flex: 1 }}
+          min={0}
+          placeholder="Уровень перепроданасти"
+          max={50}
+          status={lowLevel === null ? "error" : undefined}
+          value={lowLevel}
+          onChange={handleLowLevelChange}
+        />
+      </Tooltip>
+    </Flex>
   );
 }

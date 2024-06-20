@@ -1,17 +1,23 @@
-import { useState } from "react";
-import { InstrumentSelect } from "../select";
+import { Card, Flex } from "antd";
+import "./styles.css";
 
 interface IBaseStrategyInput {
-  children: React.ReactNode;
+  title: string;
+  instrumentSelect: React.ReactNode;
+  indicatorInput: React.ReactNode;
 }
 
-export const BaseStrategyInput = ({ children }: IBaseStrategyInput) => {
-  const [instruments, setInstruments] = useState<string[]>([]);
-
+export const BaseStrategyInput = ({
+  indicatorInput,
+  instrumentSelect,
+  title,
+}: IBaseStrategyInput) => {
   return (
-    <div>
-      <div>{children}</div>
-      <InstrumentSelect value={instruments} onChange={setInstruments} />
-    </div>
+    <Card title={title} bordered={true}>
+      <Flex vertical className="strategy-block" gap="large">
+        <div className="strategy-block__indicator">{indicatorInput}</div>
+        {instrumentSelect}
+      </Flex>
+    </Card>
   );
 };

@@ -1,4 +1,5 @@
-import { Button } from "antd";
+import { Button, Typography } from "antd";
+import "./style.css";
 
 interface IRunBtnProps {
   disabled: boolean;
@@ -6,11 +7,6 @@ interface IRunBtnProps {
   onRun(): void;
   onStop(): void;
 }
-
-const style = {
-  height: 200,
-  width: 200,
-};
 
 export const RunButton = ({
   isTurn,
@@ -24,19 +20,21 @@ export const RunButton = ({
       onClick={onStop}
       type="primary"
       shape="round"
-      style={style}
+      className="robot-btn robot-stop-btn"
     >
-      Остановить
+      <Typography.Title className="robot-btn__title">
+        Остановить
+      </Typography.Title>
     </Button>
   ) : (
     <Button
+      className="robot-btn robot-run-btn"
       disabled={disabled}
       onClick={onRun}
       type="primary"
       shape="circle"
-      style={style}
     >
-      Запуск
+      <Typography.Title className="robot-btn__title">Запуск</Typography.Title>
     </Button>
   );
 };

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { InstrumentSelect } from "../select";
 import { ISMAConfig, SMAInput } from "../inputs/SMAInput";
+import { BaseStrategyInput } from ".";
 
 export interface ISMAStrategyConfig {
   instruments: string[];
@@ -29,11 +30,12 @@ export const SMAStrategyInput = ({
   }, [sma, instruments]);
 
   return (
-    <div>
-      <div>
-        <SMAInput value={sma} onChange={setSMA} />
-      </div>
-      <InstrumentSelect value={instruments} onChange={setInstruments} />
-    </div>
+    <BaseStrategyInput
+      title="SMA (Скользящая средняя)"
+      indicatorInput={<SMAInput value={sma} onChange={setSMA} />}
+      instrumentSelect={
+        <InstrumentSelect value={instruments} onChange={setInstruments} />
+      }
+    />
   );
 };

@@ -1,3 +1,4 @@
+import { Divider, Flex } from "antd";
 import "./App.css";
 import { InstrumentPanel } from "./components/InstrumentPanel";
 import { MainButton } from "./MainButton";
@@ -5,11 +6,13 @@ import { MainButton } from "./MainButton";
 function App() {
   return (
     <>
-      <div className="card">
-        <MainButton />
-      </div>
+      <div style={{ height: "100vh", width: "100%" }}>
+        <Flex style={{ height: "80vh" }} align="center" justify="center">
+          <MainButton />
+        </Flex>
 
-      <InstrumentPanel />
+        <InstrumentPanel />
+      </div>
     </>
   );
 }

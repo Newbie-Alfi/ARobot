@@ -1,0 +1,8 @@
+.strategy-block {
+  width: 350px;
+  height: 200px;
+}
+
+.strategy-block__indicator {
+  width: 100%;
+}

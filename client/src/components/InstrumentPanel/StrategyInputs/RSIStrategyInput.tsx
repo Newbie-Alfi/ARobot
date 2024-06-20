@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { InstrumentSelect } from "../select";
 import { IRSIConfig, RSIInput } from "../inputs/RSIInput";
+import { BaseStrategyInput } from ".";
+import { Card } from "antd";
 
 export interface IRSIStrategyConfig {
   instruments: string[];
@@ -29,11 +31,12 @@ export const RSIStrategyInput = ({
   }, [rsi, instruments]);
 
   return (
-    <div>
-      <div>
-        <RSIInput value={rsi} onChange={setRSI} />
-      </div>
-      <InstrumentSelect value={instruments} onChange={setInstruments} />
-    </div>
+    <BaseStrategyInput
+      title="RSI (Индекс относительной силы)"
+      indicatorInput={<RSIInput value={rsi} onChange={setRSI} />}
+      instrumentSelect={
+        <InstrumentSelect value={instruments} onChange={setInstruments} />
+      }
+    />
   );
 };

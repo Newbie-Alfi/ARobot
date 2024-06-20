@@ -1,14 +1,15 @@
 import { SMAStrategyInput } from "./StrategyInputs/SMAStrategyInput";
 import { RSIStrategyInput } from "./StrategyInputs/RSIStrategyInput";
-import { RunRobotBtn } from "../RunRobotBtn";
 import { observer } from "mobx-react-lite";
 import { robotSettings } from "../RunRobotBtn/RobotSettingsStore";
+import { Flex } from "antd";
+import "./styles.css";
 
 interface IRunBtnProps {}
 
 export const InstrumentPanel = observer(({}: IRunBtnProps) => {
   return (
-    <>
+    <Flex wrap gap="large" className="instument-panel">
       <RSIStrategyInput
         value={robotSettings.rsi}
         onChange={robotSettings.setRSI}
@@ -17,6 +18,6 @@ export const InstrumentPanel = observer(({}: IRunBtnProps) => {
         value={robotSettings.sma}
         onChange={robotSettings.setSMA}
       />
-    </>
+    </Flex>
   );
 });

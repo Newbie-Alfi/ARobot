@@ -1,10 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { RunButton } from "../RunBtn";
-import { robotAPI } from "./api";
-import { RobotConfig } from "./types";
-import { Flex, Typography } from "antd";
+import { robotAPI } from "../RunRobotBtn/api";
+import { RobotConfig } from "../RunRobotBtn/types";
+import { Button, Typography } from "antd";
 
-interface IRunRobotBtnProps {
+interface IRestartRobotBtnProps {
   robotConfig: RobotConfig;
   onRun?(v: { status: "on" | "off"; config: RobotConfig }): void;
 }
@@ -17,12 +16,14 @@ function validateConfig(config: RobotConfig) {
   return { isValid: true };
 }
 
-export function RunRobotBtn({ robotConfig, onRun }: IRunRobotBtnProps) {
+export function RestartRobotBtn({ robotConfig, onRun }: IRestartRobotBtnProps) {
   const [status, setStatus] = useState<"on" | "off">();
   const [error, setError] = useState<string>();
 
-  const handleRun = async () => {
+  const handleClick = async () => {
     try {
+      await robotAPI.stop();
+
       const response = await robotAPI.start(robotConfig);
 
       if (onRun) onRun({ status: response.data.status, config: robotConfig });
@@ -30,16 +31,6 @@ export function RunRobotBtn({ robotConfig, onRun }: IRunRobotBtnProps) {
       setStatus(response.data.status);
     } catch (e) {
       setError("Не удалось запустить робота");
-    }
-  };
-
-  const handleStop = async () => {
-    try {
-      const response = await robotAPI.stop();
-
-      setStatus(response.data.status);
-    } catch (e) {
-      setError("Не удалось остановить робота");
     }
   };
 
@@ -62,16 +53,18 @@ export function RunRobotBtn({ robotConfig, onRun }: IRunRobotBtnProps) {
   }, []);
 
   return (
-    <Flex vertical gap="large">
-      <Typography.Title type="danger" level={5}>
-        {reason}
-      </Typography.Title>
-      <RunButton
+    <>
+      <Button
+        className="robot-btn robot-restart-btn"
         disabled={status === undefined || !isValid}
-        isTurn={status === "on"}
-        onRun={handleRun}
-        onStop={handleStop}
-      />
-    </Flex>
+        onClick={handleClick}
+        shape="circle"
+      >
+        <Typography.Title className="robot-btn__title">
+          Перезапуск
+        </Typography.Title>
+      </Button>
+      {reason}
+    </>
   );
 }
