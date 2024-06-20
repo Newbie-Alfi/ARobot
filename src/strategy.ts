@@ -31,6 +31,7 @@ import {
   RsiCrossoverSignalConfig,
 } from "./modules/predictors/RSI/RSICrossover.js";
 import { Logger } from "@vitalets/logger";
+import { SignalResult } from "./modules/predictors/base.js";
 
 export interface StrategyConfig {
   /** ID инструмента */
@@ -106,14 +107,23 @@ export class Strategy extends RobotModule {
       candles: this.instrument.candles,
       profit: this.currentProfit,
     };
-    const signals = {
+
+    // @ts-ignore
+    let signals: Record<"sma" | "rsi" | "profit", SignalResult> = {
       profit: this.profitSignal?.calc(signalParams),
-      rsi: this.rsiSignal?.calc(signalParams),
-      sma: this.smaSignal?.calc(signalParams),
     };
+
+    if (this.rsiSignal) {
+      signals["rsi"] = this.rsiSignal.calc(signalParams);
+    }
+
+    if (this.smaSignal) {
+      signals["sma"] = this.smaSignal?.calc(signalParams);
+    }
+
     this.logSignals(signals);
     // todo: здесь может быть более сложная логика комбинации сигналов.
-    return signals.profit || signals.rsi || signals.sma;
+    return signals.profit || signals?.rsi || signals?.sma;
   }
 
   /**

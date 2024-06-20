@@ -60,10 +60,8 @@ export class Robot {
     });
     this.orders = new Orders(this);
     this.portfolio = new Portfolio(this.account, api);
-    //
-    this.strategies = this.config.strategies.map(
-      (strategyConfig) => new Strategy(this, strategyConfig)
-    );
+
+    this.strategies = this._getStrategies(this.config.strategies);
   }
 
   /**
@@ -88,6 +86,16 @@ export class Robot {
   // - load candles for all figi
   // - watch prices for all figi
   // }
+
+  private _getStrategies = (config: StrategyConfig[]) => {
+    return config.map((strategyConfig) => new Strategy(this, strategyConfig));
+  };
+
+  setStrategies = (config: StrategyConfig[]) => {
+    const strategies = this._getStrategies(config);
+
+    this.strategies = strategies;
+  };
 
   private async runStrategies() {
     const tasks = this.strategies.map((strategy) => strategy.run());
