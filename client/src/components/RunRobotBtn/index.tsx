@@ -49,7 +49,7 @@ export function RunRobotBtn({ robotConfig, onRun }: IRunRobotBtnProps) {
 
       setStatus(response.data.status);
     } catch (e) {
-      setError("Не удалось получить статус роботы робота");
+      setError("Не удалось получить статус работы робота");
     }
   };
 
