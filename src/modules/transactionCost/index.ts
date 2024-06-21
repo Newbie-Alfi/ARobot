@@ -1,4 +1,4 @@
-import { TransactionCostResponse, BROKER } from "./types";
+import { TransactionCostResponse, BROKER } from "./types.js";
 
 class TransactionCosts {
   calc(current: number, incomePercentage: number): TransactionCostResponse {

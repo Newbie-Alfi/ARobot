@@ -8,7 +8,7 @@ const server = express();
 
 const corsOptions = {
   // TODO:
-  origin: "http://localhost:5173",
+  origin: "http://77.91.87.141:4173",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
@@ -29,10 +29,30 @@ server.get("/robot/status/", async (req, res) => {
 
 server.post("/robot/run/", async (req, res) => {
   const config = req.body;
+  const header = req.headers;
+
+  const token = (header["Authorization"] + "").split(" ")?.[1];
+
+  console.log(
+    token,
+    header,
+    token === process.env.TINKOFF_API_TOKEN,
+    process.env.TINKOFF_API_TOKEN
+  );
+
+  if (token !== process.env.TINKOFF_API_TOKEN) {
+    res.send(401).send({
+      message: "Неавторизованный пользователь",
+    });
+  }
 
   await run(config);
 
-  if (status !== "on") throw new Error(`Невалидный статус робота - ${status}`);
+  if (status !== "on") {
+    res.send(400).send({
+      message: `Невалидный статус робота - ${status}`,
+    });
+  }
 
   res.send({ status: status });
 });
