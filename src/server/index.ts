@@ -41,17 +41,13 @@ server.post("/robot/run/", async (req, res) => {
   );
 
   if (token !== process.env.TINKOFF_API_TOKEN) {
-    res.send(401).send({
-      message: "Неавторизованный пользователь",
-    });
+    res.sendStatus(401);
   }
 
   await run(config);
 
   if (status !== "on") {
-    res.send(400).send({
-      message: `Невалидный статус робота - ${status}`,
-    });
+    res.sendStatus(400);
   }
 
   res.send({ status: status });
