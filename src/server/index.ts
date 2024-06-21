@@ -27,34 +27,39 @@ server.get("/robot/status/", async (req, res) => {
   res.send({ status: status });
 });
 
+const isValidReq = (authorization: string) => {
+  const token = authorization.split(" ")?.[1];
+
+  return token === process.env.TINKOFF_API_TOKEN;
+};
+
 server.post("/robot/run/", async (req, res) => {
   const config = req.body;
   const header = req.headers;
 
-  const authorization = header.authorization + "";
-  const token = authorization.split(" ")?.[1];
-
-  console.log(
-    token,
-    header,
-    token === process.env.TINKOFF_API_TOKEN,
-    process.env.TINKOFF_API_TOKEN
-  );
-
-  if (token !== process.env.TINKOFF_API_TOKEN) {
-    return res.sendStatus(401).send("Неавторизованный пользователь");
+  if (!isValidReq(header.authorization + "")) {
+    return res.send({ status: "off" });
+    // return res.sendStatus(401).send("Неавторизованный пользователь");
   }
 
   await run(config);
 
   if (status !== "on") {
-    return res.sendStatus(400).send(`Невалидный статус робота - ${status}`);
+    return res.send({ status: "off" });
+    // return res.sendStatus(400).send(`Невалидный статус робота - ${status}`);
   }
 
   return res.send({ status: status });
 });
 
 server.post("/robot/stop/", async (req, res) => {
+  const header = req.headers;
+
+  if (!isValidReq(header.authorization + "")) {
+    return res.send({ status: "off" });
+    // return res.sendStatus(401).send("Неавторизованный пользователь");
+  }
+
   await stop();
 
   if (status !== "off") throw new Error(`Невалидный статус робота - ${status}`);
