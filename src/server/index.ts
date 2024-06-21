@@ -38,14 +38,14 @@ server.post("/robot/run/", async (req, res) => {
   const header = req.headers;
 
   if (!isValidReq(header.authorization + "")) {
-    return res.send({ status: "off" });
+    return res.send({ status: status });
     // return res.sendStatus(401).send("Неавторизованный пользователь");
   }
 
   await run(config);
 
   if (status !== "on") {
-    return res.send({ status: "off" });
+    return res.send({ status: status });
     // return res.sendStatus(400).send(`Невалидный статус робота - ${status}`);
   }
 
@@ -56,13 +56,13 @@ server.post("/robot/stop/", async (req, res) => {
   const header = req.headers;
 
   if (!isValidReq(header.authorization + "")) {
-    return res.send({ status: "off" });
+    return res.send({ status: status });
     // return res.sendStatus(401).send("Неавторизованный пользователь");
   }
 
   await stop();
 
-  if (status !== "off") throw new Error(`Невалидный статус робота - ${status}`);
+  if (status !== "off") return res.send({ status: status });
 
   res.send({ status: status });
 });
