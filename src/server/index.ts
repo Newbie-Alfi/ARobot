@@ -31,7 +31,8 @@ server.post("/robot/run/", async (req, res) => {
   const config = req.body;
   const header = req.headers;
 
-  const token = (header["Authorization"] + "").split(" ")?.[1];
+  const authorization = header.authorization + "";
+  const token = authorization.split(" ")?.[1];
 
   console.log(
     token,
